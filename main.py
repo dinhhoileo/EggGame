@@ -6,35 +6,38 @@ from playsound import playsound
 from tkinter import messagebox  
 
 class Event:
-    def __init__(self,game,canvas,coin,hand):
-        self.game=game
-        self.canvas=canvas
-        self.coin=coin
-        self.hand=hand
-        self.y=5      #tạo độ khoảng cách gắn trên trục y
-        self.x=randint(30,720) #tạo đô
-        self.limit_left=-2
-        self.limit_right=650
+    def __init__(self, game, canvas, coin, hand):
+        self.game = game
+        self.canvas = canvas
+        self.coin = coin
+        self.hand = hand
+        self.y = 5  # tạo độ khoảng cách gắn trên trục y
+        self.x = randint(30, 720)  # tạo đô
+        self.limit_left = -2
+        self.limit_right = 650
+        self.score = 0
+        self.text_score = self.canvas.create_text(745, 22, fill="red", font=("Times", 30), tag="score")
         
     def coin_fall(self):
         self.canvas.move(self.coin, 0, 10)
         self.y += 10
-
+        # khoảng rơi [0;550]
         if self.y >= 550:
-            self.y = 5
+            self.y = 5 # khoảng cách mỗi lần rơi
             self.x = randint(2, 750)
             self.canvas.coords(self.coin, self.x, self.y)
-
+        # lấy tạo độ x,y của tiền và
         self.coin_coords_x = self.canvas.coords(self.coin)[0]
         self.hand_coords_x = self.canvas.coords(self.hand)[0]
         self.coin_coords_y = self.canvas.coords(self.coin)[1]
         self.hand_coords_y = self.canvas.coords(self.hand)[1]
 
-        self.score = 0 
-        self.score_entry= Entry(self.game,width=5,textvariable=str(self.score),bg="blue")
-        self.score_entry.place(x=750,y=5)
-        if  self.coin_coords_x+50 >= self.hand_coords_x and self.coin_coords_x+50 <=self.hand_coords_x +178 and self.coin_coords_y+50 >=self.hand_coords_y and self.coin_coords_y <=self.hand_coords_y+100:
+        self.text_score = self.canvas.create_text(745, 22,text=f"SCORE:"+str(self.score), fill="red", font=("Times", 20), tag="score")
 
+        if self.coin_coords_x + 50 >= self.hand_coords_x and self.coin_coords_x + 50 <= self.hand_coords_x + 178 and self.coin_coords_y + 50 >= self.hand_coords_y and self.coin_coords_y <= self.hand_coords_y + 80:
+            self.canvas.delete("score")
+            self.score += 1
+            self.canvas.itemconfig(self.text_score, text=str(self.score))
             self.canvas.delete("coin")
             self.y = 5
             self.x = randint(2, 750)
